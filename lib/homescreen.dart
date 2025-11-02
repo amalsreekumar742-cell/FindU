@@ -68,11 +68,15 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/certificate.dart';
+import 'package:flutter_application_1/chatscreen.dart';
+import 'package:flutter_application_1/logout.dart';
 import 'package:flutter_application_1/page1.dart';
 import 'package:flutter_application_1/page2.dart';
 import 'package:flutter_application_1/page3.dart';
-import 'package:flutter_application_1/page4.dart';
+import 'package:flutter_application_1/page4.dart' hide Page11;
 import 'package:flutter_application_1/page5.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -94,23 +98,24 @@ class _Home11State extends State<Home11> {
   Widget build(BuildContext context) {
     // List of pages for BottomNavigationBar
     final List<Widget> pages = [
-      Page11(
-        onSaveToggle: (course) {
-          setState(() {
-            if (!savedCourses.any((c) => c["title"] == course["title"])) {
-              savedCourses.add(course);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("${course["title"]} saved!")),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("${course["title"]} already saved!")),
-              );
-            }
-          });
-        },
-      ),
-      page22(),
+     Page11(
+  onSaveToggle: (course) {
+    setState(() {
+      if (!savedCourses.any((c) => c["title"] == course["title"])) {
+        savedCourses.add(course);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${course["title"]} saved!")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${course["title"]} already saved!")),
+        );
+      }
+    });
+  },
+),
+
+      Page22(),
       Page33(
         onSaveToggle: (course) {
           setState(() {
@@ -138,7 +143,8 @@ class _Home11State extends State<Home11> {
           );
         },
       ),
-      page55(),
+ProfilePage()
+      ,
     ];
 
     return Scaffold(
@@ -159,8 +165,150 @@ class _Home11State extends State<Home11> {
           BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "Course"),
           BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: "Saved"),
+          
+
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Profile"),
         ],
+      ), drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.blueAccent),
+              accountName: Text("AMAL"),
+              accountEmail: Text("amal1231@gmail.com"),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.blueAccent,
+                backgroundImage: NetworkImage(
+                  "https://m.media-amazon.com/images/I/81mp7SHZ11L._UF1000,1000_QL80_.jpg",
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home, color: Colors.blueAccent),
+              title: const Text("Home"),
+              onTap: () {
+               Navigator.pop(context); // close drawer
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => Home11()),
+);
+
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.search, color: Colors.blueAccent),
+              title: const Text("Search"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Page22()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.menu_book, color: Colors.blueAccent),
+              title: const Text("Courses"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Page33(
+                    onSaveToggle: (course) {
+          setState(() {
+            if (!savedCourses.any((c) => c["title"] == course["title"])) {
+              savedCourses.add(course);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("${course["title"]} saved!")),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("${course["title"]} already saved!")),
+              );
+            }
+          });
+        },
+        )
+        ),
+                );
+              },
+            ),
+            ListTile(
+  leading: const Icon(Icons.search, color: Colors.blueAccent),
+  title: const Text("Certificates"),
+  onTap: () async {
+    Navigator.pop(context);
+
+    // Load last completed course from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    String? completedCourse = prefs.getString('lastCompletedCourse');
+
+    if (completedCourse == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No certificate available yet. Complete a course first!"),
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            CertificatePage(courseTitle: completedCourse),
+      ),
+    );
+  },
+),
+
+            ListTile(
+              leading: const Icon(Icons.bookmark, color: Colors.blueAccent),
+              title: const Text("Saved"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  SavedPage(
+        savedCourses: savedCourses,
+        onUnsave: (course) {
+          setState(() {
+            savedCourses.removeWhere((c) => c["title"] == course["title"]);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${course["title"]} removed!")),
+          );
+        },
+      ),),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.question_mark_outlined, color: Colors.blueAccent),
+              title: const Text("FAQs & support"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                );
+              },
+            ),
+            
+            
+            
+           ListTile(
+  leading: const Icon(Icons.logout, color: Colors.blueAccent),
+  title: const Text("Logout"),
+  onTap: () {
+    Navigator.pop(context); // Close drawer
+    showLogoutDialog(context);
+  },
+),
+
+          ],
+        ),
       ),
     );
   }

@@ -103,8 +103,8 @@ class _Project33State extends State<Project33> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF1A73E8), // Deep blue
-              Color(0xFF64B5F6), // Light blue
+              Color(0xFF1A73E8),
+              Color(0xFF64B5F6),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -136,7 +136,7 @@ class _Project33State extends State<Project33> {
 
                 const SizedBox(height: 40),
 
-                // Card with input fields
+                // Login Card
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -152,13 +152,12 @@ class _Project33State extends State<Project33> {
                   ),
                   child: Column(
                     children: [
-                      // Email
+                      // Email Field
                       TextField(
                         controller: cont1,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          prefixIcon:
-                              const Icon(Icons.email, color: Colors.blueAccent),
+                          prefixIcon: const Icon(Icons.email, color: Colors.blueAccent),
                           labelText: "Email",
                           hintText: "Enter your email",
                           border: OutlineInputBorder(
@@ -168,18 +167,15 @@ class _Project33State extends State<Project33> {
                       ),
                       const SizedBox(height: 15),
 
-                      // Password
+                      // Password Field
                       TextField(
                         controller: cont2,
                         obscureText: obscurePassword,
                         decoration: InputDecoration(
-                          prefixIcon:
-                              const Icon(Icons.lock, color: Colors.blueAccent),
+                          prefixIcon: const Icon(Icons.lock, color: Colors.blueAccent),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              obscurePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                              obscurePassword ? Icons.visibility_off : Icons.visibility,
                               color: Colors.blueAccent,
                             ),
                             onPressed: () {
@@ -195,42 +191,79 @@ class _Project33State extends State<Project33> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+
+                      // Forgot Password
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () async {
+                            if (cont1.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Please enter your email to reset password."),
+                                  backgroundColor: Colors.orangeAccent,
+                                ),
+                              );
+                              return;
+                            }
+                            try {
+                              await FirebaseAuth.instance.sendPasswordResetEmail(
+                                email: cont1.text.trim(),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Password reset link sent to your email."),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } catch (error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Error: ${error.toString()}"),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
 
                       // Login Button
                       isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.blueAccent,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.blueAccent)
                           : ElevatedButton(
                               onPressed: () async {
                                 setState(() {
                                   isLoading = true;
                                 });
                                 try {
-                                  await FirebaseAuth.instance
-                                      .signInWithEmailAndPassword(
+                                  await FirebaseAuth.instance.signInWithEmailAndPassword(
                                     email: cont1.text.trim(),
                                     password: cont2.text.trim(),
                                   );
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content:
-                                          Text("Login successful! 🎉"),
+                                      content: Text("Login successful! 🎉"),
                                       backgroundColor: Colors.green,
                                     ),
                                   );
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Home11()),
+                                    MaterialPageRoute(builder: (context) => const Home11()),
                                   );
                                 } catch (error) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content:
-                                          Text("Error: ${error.toString()}"),
+                                      content: Text("Error: ${error.toString()}"),
                                       backgroundColor: Colors.redAccent,
                                     ),
                                   );
@@ -242,8 +275,7 @@ class _Project33State extends State<Project33> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blueAccent,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 60, vertical: 15),
+                                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),
@@ -251,10 +283,7 @@ class _Project33State extends State<Project33> {
                               ),
                               child: const Text(
                                 "Login",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
+                                style: TextStyle(fontSize: 18, color: Colors.white),
                               ),
                             ),
                     ],
@@ -275,8 +304,7 @@ class _Project33State extends State<Project33> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => const Project22()),
+                          MaterialPageRoute(builder: (context) => const Project22()),
                         );
                       },
                       child: const Text(

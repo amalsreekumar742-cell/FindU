@@ -1,0 +1,18 @@
+[
+  {
+    "question": "What is the price of the Pro plan?",
+    "answer": "The Pro plan costs $19 per month or $180 per year."
+  },
+  {
+    "question": "How do I reset my password?",
+    "answer": "Go to Settings → Account → Reset Password. A link will be sent to your email."
+  },
+  {
+    "question": "Do you support dark mode?",
+    "answer": "Yes! Dark mode is available on iOS, Android and Web."
+  },
+  {
+    "question": "Can I export my data?",
+    "answer": "Yes, export is under Settings → Data → Export (CSV/JSON)."
+  }
+]

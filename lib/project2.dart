@@ -1,122 +1,7 @@
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_application_1/project3.dart';
-
-// class Project22 extends StatefulWidget {
-//   const Project22({super.key});
-
-//   @override
-//   State<Project22> createState() => _Project22State();
-// }
-
-// class _Project22State extends State<Project22> {
-//   TextEditingController cont1=TextEditingController();
-//     TextEditingController cont2=TextEditingController();
-//   TextEditingController cont3=TextEditingController();
-//   TextEditingController cont4=TextEditingController();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(body: Column(
-//       children: [
-//                 SizedBox(height: 20,),
-
-//         Text("Register"),
-//         SizedBox(height: 20,),
-//         TextField(
-//           controller: cont1,
-//           decoration: InputDecoration(
-//             border: OutlineInputBorder(),
-            
-//             label: Text("Name"),
-//             hintText: "Enter your full name"
-//           ),
-          
-          
-//         ),
-//         SizedBox(height: 13,),
-
-//         TextField(
-//           controller: cont2,
-//           decoration: InputDecoration(
-//             border: OutlineInputBorder(),
-            
-//             label: Text("Email"),
-//             hintText: "Enter your email id"
-//           ),
-          
-          
-//         ),        SizedBox(height: 13,),
-
-
-//         TextField(
-//           controller: cont3,
-//           decoration: InputDecoration(
-//             border: OutlineInputBorder(),
-            
-//             label: Text("Mobile"),
-//             hintText: "Enter your mobile number"
-//           ),
-          
-          
-//         ),
-//         SizedBox(height: 13,),
-
-
-
-//         TextField(
-//           controller: cont4,
-//           decoration: InputDecoration(
-//             border: OutlineInputBorder(),
-            
-//             label: Text("Password"),
-//             hintText: "Enter your password"
-//           ),
-          
-          
-//         )
-//         ,SizedBox(height: 20,)
-//         ,
-//         Center(
-//                 child: ElevatedButton(onPressed: (
-                  
-//                 ){
-//                   FirebaseAuth.instance.createUserWithEmailAndPassword(
-//                             email:cont2.text,
-//                             password: cont4.text).then((value) {
-//                       print("Create a new account");
-//                   Navigator.push(context, MaterialPageRoute(builder: (context)=>Project22()));
-//                 },
-//                  ).onError((error, StackTrace) {
-//                       print("Errorr----- $error");
-//                     });},
-//                  child: Text("Register",style: TextStyle(color: Colors.white),),
-//                 style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue))),
-                
-//                 ),
-
-//                 Row(mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     Text("Not a new member?"),
-//                     TextButton(onPressed: (
-
-
-//                     ){
-
-//                       Navigator.push(context, MaterialPageRoute(builder: (context)=>Project33()));
-//                     }, child: Text("Login"))
-//                   ],
-//                 )
-
-                
-//       ],
-//     ),);
-//   }
-// }
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/project3.dart';
+import 'package:flutter_application_1/project3.dart'; // your login page
 
 class Project22 extends StatefulWidget {
   const Project22({super.key});
@@ -126,25 +11,24 @@ class Project22 extends StatefulWidget {
 }
 
 class _Project22State extends State<Project22> {
-  TextEditingController cont1 = TextEditingController();
-  TextEditingController cont2 = TextEditingController();
-  TextEditingController cont3 = TextEditingController();
-  TextEditingController cont4 = TextEditingController();
+  TextEditingController cont1 = TextEditingController(); // name
+  TextEditingController cont2 = TextEditingController(); // email
+  TextEditingController cont3 = TextEditingController(); // mobile
+  TextEditingController cont4 = TextEditingController(); // password
 
   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Remove backgroundColor here so the gradient is visible
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0xFF1A73E8), // Deep blue
-              Color(0xFF64B5F6), // Lighter blue
+              Color(0xFF1A73E8),
+              Color(0xFF64B5F6),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -157,8 +41,6 @@ class _Project22State extends State<Project22> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-
-                // Title
                 const Text(
                   "Create Your Account",
                   style: TextStyle(
@@ -173,7 +55,6 @@ class _Project22State extends State<Project22> {
                   "Join us to find your passion ✨",
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
-
                 const SizedBox(height: 40),
 
                 // White card-style container
@@ -197,8 +78,8 @@ class _Project22State extends State<Project22> {
                       TextField(
                         controller: cont1,
                         decoration: InputDecoration(
-                          prefixIcon:
-                              const Icon(Icons.person, color: Colors.blueAccent),
+                          prefixIcon: const Icon(Icons.person,
+                              color: Colors.blueAccent),
                           labelText: "Name",
                           hintText: "Enter your full name",
                           border: OutlineInputBorder(
@@ -213,8 +94,8 @@ class _Project22State extends State<Project22> {
                         controller: cont2,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          prefixIcon:
-                              const Icon(Icons.email, color: Colors.blueAccent),
+                          prefixIcon: const Icon(Icons.email,
+                              color: Colors.blueAccent),
                           labelText: "Email",
                           hintText: "Enter your email",
                           border: OutlineInputBorder(
@@ -229,8 +110,8 @@ class _Project22State extends State<Project22> {
                         controller: cont3,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          prefixIcon:
-                              const Icon(Icons.phone, color: Colors.blueAccent),
+                          prefixIcon: const Icon(Icons.phone,
+                              color: Colors.blueAccent),
                           labelText: "Mobile",
                           hintText: "Enter your mobile number",
                           border: OutlineInputBorder(
@@ -263,15 +144,47 @@ class _Project22State extends State<Project22> {
                             )
                           : ElevatedButton(
                               onPressed: () async {
+                                if (cont1.text.isEmpty ||
+                                    cont2.text.isEmpty ||
+                                    cont3.text.isEmpty ||
+                                    cont4.text.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          "Please fill all the fields ❗"),
+                                      backgroundColor: Colors.redAccent,
+                                    ),
+                                  );
+                                  return;
+                                }
+
                                 setState(() {
                                   isLoading = true;
                                 });
+
                                 try {
-                                  await FirebaseAuth.instance
-                                      .createUserWithEmailAndPassword(
+                                  // Create user in Firebase Authentication
+                                  UserCredential userCredential =
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
                                     email: cont2.text.trim(),
                                     password: cont4.text.trim(),
                                   );
+
+                                  User? user = userCredential.user;
+
+                                  // Save user data to Firestore
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(user!.uid)
+                                      .set({
+                                    'name': cont1.text.trim(),
+                                    'email': cont2.text.trim(),
+                                    'mobile': cont3.text.trim(),
+                                    'uid': user.uid,
+                                    'createdAt': DateTime.now(),
+                                  });
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
@@ -279,7 +192,8 @@ class _Project22State extends State<Project22> {
                                       backgroundColor: Colors.green,
                                     ),
                                   );
-                                  Navigator.push(
+
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
